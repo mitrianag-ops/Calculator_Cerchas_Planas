@@ -9,7 +9,7 @@ Resuelve cerchas planas, calculando sus desplazamientos, reacciones y fuerzas in
 Haz clic en el siguiente enlace para abrir la calculadora interactiva directamente en tu navegador:
 
  **[Abrir Calculadora de Cerchas Planas]([https://tu-app.streamlit.app)](https://calculatorcerchasplanas-ghfpxfvnz2ceqxcj2grbsz.streamlit.app/)**
-
+#### version 1.0.0 primitiva
 ---
 
 ###  Estructura del Proyecto
