@@ -109,7 +109,7 @@ if st.button("🚀 Resolver Cercha Plana", type="primary"):
         # 2. LLAMADA A TU CÓDIGO DE CÁLCULO (Sustituye esta sección con tu función real):
         # -----------------------------------------------------------------------------
         # Ejemplo conceptual de cómo conectas tu script:
-        des,pa,lista_ke,kglobal,f_axial = calculos(num_nodos,num_barras,conectividad_input,coords_mm,areas_input,modulo_E,gdl_libres,gdl_restringidos,cargas_input)
+        des,pa,lista_ke,kglobal,f_axial,kaa,kbb,kab,kba = calculos(num_nodos,num_barras,conectividad_input,coords_mm,areas_input,modulo_E,gdl_libres,gdl_restringidos,cargas_input)
         # -----------------------------------------------------------------------------
 
         st.success("¡Cálculo procesado exitosamente!")
@@ -123,5 +123,9 @@ if st.button("🚀 Resolver Cercha Plana", type="primary"):
             reacciones=pa,           # Reemplaza con tu variable de reacciones
             fuerzas_axiales=f_axial, # Reemplaza con tu variable de fuerzas axiales
             matrices_ke_global=lista_ke,# Reemplaza con tu lista de matrices ke
-            K_global=kglobal         # Reemplaza con tu matriz K global
+            K_global=kglobal,
+            kaa=kaa,
+            kbb=kbb,
+            kab=kab,
+            kba=kba      
         )

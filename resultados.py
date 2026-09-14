@@ -9,7 +9,11 @@ def mostrar_resultados_estructurales(
     reacciones, 
     fuerzas_axiales, 
     matrices_ke_global, 
-    K_global
+    K_global,
+    kaa,
+    kbb,
+    kab,
+    kba
 ):
     """
     Módulo de visualización para Streamlit.
@@ -96,6 +100,37 @@ def mostrar_resultados_estructurales(
         columnas_gdl = [f"GDL {i+1}" for i in range(num_total_gdl)]
         df_kglobal = pd.DataFrame(K_global, index=columnas_gdl, columns=columnas_gdl)
         st.dataframe(df_kglobal.style.format("{:.4f}"), use_container_width=True)
+
+    # --- SECCIÓN 4.5: Submatrices Particionadas Kaa, Kbb, Kab, Kba ---
+    with st.expander("🧩 Ver Submatrices Particionadas de Rigidez ($K_{aa}, K_{bb}, K_{ab}, K_{ba}$)"):
+        
+        # 1. Kaa usa los Grados de Libertad Restringidos
+        num_a_rows = kaa.shape[0]
+        cols_a = [f"GDL {gdl_restringidos[i]}" if i < len(gdl_restringidos) else f"GDL {i+1}" for i in range(num_a_rows)]
+
+        # 2. Kbb usa los Grados de Libertad Libres
+        num_b_rows = kbb.shape[0]
+        cols_b = [f"GDL {gdl_libres[i]}" if i < len(gdl_libres) else f"GDL {i+1}" for i in range(num_b_rows)]
+
+        col_k1, col_k2 = st.columns(2)
+
+        with col_k1:
+            st.markdown("**Matriz $K_{aa}$ (Restringidos - Restringidos):**")
+            df_kaa = pd.DataFrame(kaa, index=cols_a, columns=cols_a)
+            st.dataframe(df_kaa.style.format("{:.4f}"), use_container_width=True)
+
+            st.markdown("**Matriz $K_{ab}$ (Restringidos - Libres):**")
+            df_kab = pd.DataFrame(kab, index=cols_a, columns=cols_b)
+            st.dataframe(df_kab.style.format("{:.4f}"), use_container_width=True)
+
+        with col_k2:
+            st.markdown("**Matriz $K_{bb}$ (Libres - Libres):**")
+            df_kbb = pd.DataFrame(kbb, index=cols_b, columns=cols_b)
+            st.dataframe(df_kbb.style.format("{:.4f}"), use_container_width=True)
+
+            st.markdown("**Matriz $K_{ba}$ (Libres - Restringidos):**")
+            df_kba = pd.DataFrame(kba, index=cols_b, columns=cols_a)
+            st.dataframe(df_kba.style.format("{:.4f}"), use_container_width=True)
 
     # --- SECCIÓN 5: Matrices Ke por Barra ---
     with st.expander("🧩 Ver Matrices de Rigidez por Barra ($K_e$ Global)"):

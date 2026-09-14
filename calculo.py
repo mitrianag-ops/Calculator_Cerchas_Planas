@@ -6,6 +6,7 @@ def calculos(nodos,barras,nodos_barra,lista_nodos,areas,elasticida,gdlibres,gdlr
     t=nodos*2
     kglobal=np.zeros((t,t))
     lista_ke=[]
+    lista_keaxial=[]
     # FUNCION QUE CALCULA LAS MATRICES DE RIGIDEZ DE CADA BARRA 
     def matriz_ke(numbarra):
         global k,l,m,n
@@ -37,7 +38,8 @@ def calculos(nodos,barras,nodos_barra,lista_nodos,areas,elasticida,gdlibres,gdlr
         kglobal[l][k]=kglobal[l][k]+ke[1][0]; kglobal[l][l]=kglobal[l][l]+ke[1][1]; kglobal[l][m]=kglobal[l][m]+ke[1][2]; kglobal[l][n]= kglobal[l][n]+ke[1][3] #sumar fila 2
         kglobal[m][k]=kglobal[m][k]+ke[2][0]; kglobal[m][l]=kglobal[m][l]+ke[2][1]; kglobal[m][m]=kglobal[m][m]+ke[2][2]; kglobal[m][n]= kglobal[m][n]+ke[2][3] #sumar fila 3
         kglobal[n][k]=kglobal[n][k]+ke[3][0]; kglobal[n][l]=kglobal[n][l]+ke[3][1]; kglobal[n][m]=kglobal[n][m]+ke[3][2]; kglobal[n][n]= kglobal[n][n]+ke[3][3] #sumar fila 4 
-        return kelocal
+        # anadir la fila 3 de las ke para calcular las f axiales
+        lista_keaxial.append(kelocal)
 
     #  FUNCION QUE CALCULA CADA KE PARA SUMAR EN LA KGLOBAL
     def calcular_kglobal(barras):
@@ -84,6 +86,7 @@ def calculos(nodos,barras,nodos_barra,lista_nodos,areas,elasticida,gdlibres,gdlr
             g=g+1
         return kab
     kab=matrix_kab()
+    kba=kab.T
 
     # CALCULAR DEZPLAZAMIENTOS DE LOS GDL LIBRES
     db=np.linalg.inv(kbb)@pb
@@ -105,15 +108,13 @@ def calculos(nodos,barras,nodos_barra,lista_nodos,areas,elasticida,gdlibres,gdlr
     f_axial=[] # LISTA QUE ALMACENA LAS FUERZAS AXIALES DE TODAS LAS BARRAS
     def fuerza_axial(barras): 
         for i in range(1,barras+1,1):
-            kelocal_nj=matriz_ke(i)
+            kelocal_nj=lista_keaxial[i-1]
             deske=np.array([[des[k,0]],[des[l,0]],[des[m,0]],[des[n,0]]])
             fuerza_nj=kelocal_nj@deske
             f_axial.append(fuerza_nj[0])
     fuerza_axial(barras)
 
-    return des,pa,lista_ke,kglobal,f_axial
-
+    return des,pa,lista_ke,kglobal,f_axial,kaa,kbb,kab,kba
 
 
 # seguir probardo con varios ejercicios
-# elaborar repositorio githud para subir la app a la nube y poder usar solo con el link sin tenr q correr vsc
