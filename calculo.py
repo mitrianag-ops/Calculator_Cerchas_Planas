@@ -1,120 +1,109 @@
 import numpy as np
 
-def calculos(nodos,barras,nodos_barra,lista_nodos,areas,elasticida,gdlibres,gdlrest,pb):
-    pb= np.array(pb).reshape(-1, 1)
-# DEFINIR MATRIX DE RIGIDEZ GLOBAL
-    t=nodos*2
-    kglobal=np.zeros((t,t))
-    lista_ke=[]
-    lista_keaxial=[]
+def calculos(nodos, barras, nodos_barra, lista_nodos, areas, elasticida, gdlibres, gdlrest, pb):
+    pb = np.array(pb).reshape(-1, 1)
+    
+    # DEFINIR MATRIZ DE RIGIDEZ GLOBAL
+    t = nodos * 2
+    kglobal = np.zeros((t, t))
+    lista_ke = []
+    lista_keaxial = []
+    
+    # Estructura para almacenar los grados de libertad (i, l, m, n) de cada barra
+    gdls_por_barra = []
+
     # FUNCION QUE CALCULA LAS MATRICES DE RIGIDEZ DE CADA BARRA 
     def matriz_ke(numbarra):
-        global k,l,m,n
-        ke=np.zeros((4,4))
-        i=2*numbarra-2
-        j=i+1
-        num_nodoi=nodos_barra[i]
-        num_nodoj=nodos_barra[j]
-        k=2*num_nodoi-2 # gdl-1 en el nodo i
-        l=k+1
-        m=2*num_nodoj-2
-        n=m+1
-        coorXi=lista_nodos[k] #COORDENADAS DEL NODO i
-        coorYi=lista_nodos[l] 
-        coorXj=lista_nodos[m] #COORDENADAS DEL NODO j
-        coorYj=lista_nodos[n]
-        le=np.sqrt((coorXi-coorXj)**2+(coorYi-coorYj)**2)
-        ncos=(coorXj-coorXi)/le
-        usen=(coorYj-coorYi)/le
-        eal=elasticida*areas[(numbarra-1)]/le
-        kelocal=eal*np.array([-ncos,-usen,ncos,usen])
-        ke[0][0]=ncos**2*eal; ke[0][1]=usen*ncos*eal; ke[0][2]=-ncos**2*eal; ke[0][3]=-usen*ncos*eal #crear fila 1
-        ke[1][0]=usen*ncos*eal; ke[1][1]=usen**2*eal; ke[1][2]=-usen*ncos*eal; ke[1][3]=-usen**2*eal #crear fila 2
-        ke[2][0]=-ncos**2*eal; ke[2][1]=-usen*ncos*eal; ke[2][2]=ncos**2*eal; ke[2][3]=usen*ncos*eal #crear fila 3
-        ke[3][0]=-usen*ncos*eal; ke[3][1]=-usen**2*eal; ke[3][2]=usen*ncos*eal; ke[3][3]=usen**2*eal #crear fila 4              
+        ke = np.zeros((4, 4))
+        
+        # Identificación de nodos
+        idx_i = 2 * numbarra - 2
+        idx_j = idx_i + 1
+        num_nodoi = nodos_barra[idx_i]
+        num_nodoj = nodos_barra[idx_j]
+        
+        # Grados de libertad locales (0-indexed para Python)
+        k = 2 * num_nodoi - 2
+        l = k + 1
+        m = 2 * num_nodoj - 2
+        n = m + 1
+        
+        # Guardamos los GDL de esta barra específica
+        gdls_por_barra.append((k, l, m, n))
+
+        # Coordenadas
+        coorXi = lista_nodos[k]
+        coorYi = lista_nodos[l] 
+        coorXj = lista_nodos[m]
+        coorYj = lista_nodos[n]
+        
+        # Geometría y propiedades
+        le = np.sqrt((coorXj - coorXi)**2 + (coorYj - coorYi)**2)
+        ncos = (coorXj - coorXi) / le
+        usen = (coorYj - coorYi) / le
+        eal = elasticida * areas[numbarra - 1] / le
+
+        # Matriz de rigidez del elemento en coordenadas globales
+        # T^T * k_local * T
+        ke[0][0] = ncos**2 * eal;      ke[0][1] = usen*ncos * eal;  ke[0][2] = -ncos**2 * eal;     ke[0][3] = -usen*ncos * eal
+        ke[1][0] = usen*ncos * eal;   ke[1][1] = usen**2 * eal;    ke[1][2] = -usen*ncos * eal;   ke[1][3] = -usen**2 * eal
+        ke[2][0] = -ncos**2 * eal;    ke[2][1] = -usen*ncos * eal; ke[2][2] = ncos**2 * eal;      ke[2][3] = usen*ncos * eal
+        ke[3][0] = -usen*ncos * eal;  ke[3][1] = -usen**2 * eal;   ke[3][2] = usen*ncos * eal;    ke[3][3] = usen**2 * eal              
+        
         lista_ke.append(ke)
-        # SUMANDO-ENSAMBLAJE DE LA KE EN LA K GLOBAL
-        kglobal[k][k]=kglobal[k][k]+ke[0][0]; kglobal[k][l]=kglobal[k][l]+ke[0][1]; kglobal[k][m]=kglobal[k][m]+ke[0][2]; kglobal[k][n]= kglobal[k][n]+ke[0][3] #sumar fila 1
-        kglobal[l][k]=kglobal[l][k]+ke[1][0]; kglobal[l][l]=kglobal[l][l]+ke[1][1]; kglobal[l][m]=kglobal[l][m]+ke[1][2]; kglobal[l][n]= kglobal[l][n]+ke[1][3] #sumar fila 2
-        kglobal[m][k]=kglobal[m][k]+ke[2][0]; kglobal[m][l]=kglobal[m][l]+ke[2][1]; kglobal[m][m]=kglobal[m][m]+ke[2][2]; kglobal[m][n]= kglobal[m][n]+ke[2][3] #sumar fila 3
-        kglobal[n][k]=kglobal[n][k]+ke[3][0]; kglobal[n][l]=kglobal[n][l]+ke[3][1]; kglobal[n][m]=kglobal[n][m]+ke[3][2]; kglobal[n][n]= kglobal[n][n]+ke[3][3] #sumar fila 4 
-        # anadir la fila 3 de las ke para calcular las f axiales
+
+        # Vector de transformación para fuerza axial (1x4)
+        kelocal = eal * np.array([[-ncos, -usen, ncos, usen]])
         lista_keaxial.append(kelocal)
 
-    #  FUNCION QUE CALCULA CADA KE PARA SUMAR EN LA KGLOBAL
-    def calcular_kglobal(barras):
-        # recorre cada barra  para calcular su matriz de rigidez y sumarla a la k global
-        for i in range(1,barras+1,1):
-            matriz_ke(i)
-    calcular_kglobal(barras)
+        # Ensamblaje en la Matriz Global
+        gdl = [k, l, m, n]
+        for row in range(4):
+            for col in range(4):
+                kglobal[gdl[row]][gdl[col]] += ke[row][col]
 
-    # SACAR MATRICES AA,AB,BB
-    def matrix_kaa(): # sacar matrix kaa
-        kaa=np.zeros((len(gdlrest),len(gdlrest)))
-        g=0
-        for i in gdlrest:
-            h=0
-            for j in gdlrest:
-                kaa[g][h]=kglobal[i-1,j-1]
-                h=h+1
-            g=g+1
-        return kaa
-    kaa=matrix_kaa()
+    # Calcular Matrices Elementales y Global
+    for i in range(1, barras + 1):
+        matriz_ke(i)
 
-    # OBTENER MATRIX KBB
-    def matrix_kbb():
-        kbb=np.zeros((len(gdlibres),len(gdlibres)))
-        g=0
-        for i in gdlibres:
-            h=0
-            for j in gdlibres:
-                kbb[g][h]=kglobal[i-1,j-1]
-                h=h+1
-            g=g+1
-        return kbb
-    kbb=matrix_kbb()
+    # EXTRACCIÓN DE SUBMATRICES Kaa, Kbb, Kab
+    # Se ajustan índices (1-based de entrada a 0-based de Python)
+    g_rest = [x - 1 for x in gdlrest]
+    g_lib  = [x - 1 for x in gdlibres]
 
-    # OBTENER MATRIX KAB
-    def matrix_kab():
-        kab=np.zeros((len(gdlrest),len(gdlibres)))
-        g=0
-        for i in gdlrest:
-            h=0
-            for j in gdlibres:
-                kab[g][h]=kglobal[i-1,j-1]
-                h=h+1
-            g=g+1
-        return kab
-    kab=matrix_kab()
-    kba=kab.T
+    kaa = kglobal[np.ix_(g_rest, g_rest)]
+    kbb = kglobal[np.ix_(g_lib, g_lib)]
+    kab = kglobal[np.ix_(g_rest, g_lib)]
+    kba = kab.T
 
-    # CALCULAR DEZPLAZAMIENTOS DE LOS GDL LIBRES
-    db=np.linalg.inv(kbb)@pb
+    # DESPLAZAMIENTOS EN GDL LIBRES
+    db = np.linalg.inv(kbb) @ pb
 
-    # CALCULAR REACCIONES
-    pa=kab@db
+    # REACCIONES EN GDL RESTRINGIDOS
+    pa = kab @ db
 
-    # CALCULAR FUERZAS AXIALES-INTERNAS DE CADA BARRA
-    des=np.zeros((t,1)) # VECTOR QUE ALMACENARA TODOS LOS DESPLAZAMIENTOS
-    def desplaz():  # FUNCION QUE VA LLENANDO LOS DESPLA EN EL VECTOR DES
-        h=0
-        for i in gdlibres:
-            des[i-1][0]=db[h,0]
-            h=h+1
-        for j in gdlrest:
-            des[j-1][0]=0
-    desplaz()
+    # VECTOR GLOBAL DE DESPLAZAMIENTOS (des)
+    des = np.zeros((t, 1))
+    for idx, gdl in enumerate(g_lib):
+        des[gdl, 0] = db[idx, 0]
 
-    f_axial=[] # LISTA QUE ALMACENA LAS FUERZAS AXIALES DE TODAS LAS BARRAS
-    def fuerza_axial(barras): 
-        for i in range(1,barras+1,1):
-            kelocal_nj=lista_keaxial[i-1]
-            deske=np.array([[des[k,0]],[des[l,0]],[des[m,0]],[des[n,0]]])
-            fuerza_nj=kelocal_nj@deske
-            f_axial.append(fuerza_nj[0])
-    fuerza_axial(barras)
+    # CALCULO DE FUERZAS AXIALES
+    f_axial = []
+    for i in range(barras):
+        kelocal_nj = lista_keaxial[i]  # Matriz (1, 4)
+        k, l, m, n = gdls_por_barra[i] # GDL correspondientes a ESTA barra
+        
+        # Desplazamientos de los nodos i y j de esta barra
+        deske = np.array([
+            [des[k, 0]],
+            [des[l, 0]],
+            [des[m, 0]],
+            [des[n, 0]]
+        ])
+        
+        # Fuerza axial: F = k_axial * d_e
+        fuerza_nj = kelocal_nj @ deske
+        f_axial.append(fuerza_nj[0, 0])
 
-    return des,pa,lista_ke,kglobal,f_axial,kaa,kbb,kab,kba
-
-
+    return des, pa, lista_ke, kglobal, f_axial, kaa, kbb, kab, kba
 # seguir probardo con varios ejercicios
