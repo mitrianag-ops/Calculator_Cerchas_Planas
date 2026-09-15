@@ -106,4 +106,5 @@ def calculos(nodos, barras, nodos_barra, lista_nodos, areas, elasticida, gdlibre
         f_axial.append(fuerza_nj[0, 0])
 
     return des, pa, lista_ke, kglobal, f_axial, kaa, kbb, kab, kba
+
 # seguir probardo con varios ejercicios

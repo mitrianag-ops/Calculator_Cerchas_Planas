@@ -12,12 +12,9 @@ with st.sidebar:
 # Importar tu módulo de presentación
 from resultados import mostrar_resultados_estructurales
 
-# IMPORTANTE: Descomenta la siguiente línea e importa la función principal de tu script de cálculo:
-# from calculo import tu_funcion_de_calculo
-
 st.set_page_config(page_title="Calculadora Cerchas Planas", page_icon="🏗️", layout="wide")
 
-st.title("🏗️ Cerchas Planas")
+st.title("🏗️ Cerchas Planas 2D")
 st.caption("Interfaz en Streamlit para resolver cerchas por el Método Matricial")
 
 # --- SECCIÓN 1: Datos Generales ---
