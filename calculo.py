@@ -7,7 +7,6 @@ def calculos(nodos, barras, nodos_barra, lista_nodos, areas, elasticida, gdlibre
     t = nodos * 2
     kglobal = np.zeros((t, t))
     lista_ke = []
-    lista_keaxial = []
     
     # Estructura para almacenar los grados de libertad (i, l, m, n) de cada barra
     gdls_por_barra = []
@@ -54,7 +53,6 @@ def calculos(nodos, barras, nodos_barra, lista_nodos, areas, elasticida, gdlibre
 
         # Vector de transformación para fuerza axial (1x4)
         kelocal = eal * np.array([[-ncos, -usen, ncos, usen]])
-        lista_keaxial.append(kelocal)
 
         # Ensamblaje en la Matriz Global
         gdl = [k, l, m, n]
@@ -90,21 +88,43 @@ def calculos(nodos, barras, nodos_barra, lista_nodos, areas, elasticida, gdlibre
     # CALCULO DE FUERZAS AXIALES
     f_axial = []
     for i in range(barras):
-        kelocal_nj = lista_keaxial[i]  # Matriz (1, 4)
-        k, l, m, n = gdls_por_barra[i] # GDL correspondientes a ESTA barra
+        # Extraer los GDL asociados a la barra i
+        k, l, m, n = gdls_por_barra[i]
         
         # Desplazamientos de los nodos i y j de esta barra
-        deske = np.array([
-            [des[k, 0]],
-            [des[l, 0]],
-            [des[m, 0]],
-            [des[n, 0]]
-        ])
+        d_xi = des[k, 0]
+        d_yi = des[l, 0]
+        d_xj = des[m, 0]
+        d_yj = des[n, 0]
         
-        # Fuerza axial: F = k_axial * d_e
-        fuerza_nj = kelocal_nj @ deske
-        f_axial.append(fuerza_nj[0, 0])
-
+        # Recuperar la geometría de la barra i para recalculado exacto
+        idx_i = 2 * i
+        idx_j = idx_i + 1
+        num_nodoi = int(nodos_barra[idx_i])
+        num_nodoj = int(nodos_barra[idx_j])
+        
+        ki = 2 * num_nodoi - 2
+        li = ki + 1
+        mi = 2 * num_nodoj - 2
+        ni = mi + 1
+        
+        coorXi = float(lista_nodos[ki])
+        coorYi = float(lista_nodos[li])
+        coorXj = float(lista_nodos[mi])
+        coorYj = float(lista_nodos[ni])
+        
+        le = np.sqrt((coorXj - coorXi)**2 + (coorYj - coorYi)**2)
+        ncos = (coorXj - coorXi) / le
+        usen = (coorYj - coorYi) / le
+        eal = float(elasticida) * float(areas[i]) / le
+        
+        # Cambio de longitud de la barra (deformación axial)
+        delta_l = (d_xj - d_xi) * ncos + (d_yj - d_yi) * usen
+        
+        # Fuerza axial: F = (A * E / L) * delta_L
+        # Positivo = Tensión, Negativo = Compresión
+        fuerza = eal * delta_l
+        f_axial.append(fuerza)
     return des, pa, lista_ke, kglobal, f_axial, kaa, kbb, kab, kba
 
 # seguir probardo con varios ejercicios
