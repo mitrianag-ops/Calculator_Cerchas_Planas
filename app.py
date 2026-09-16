@@ -14,7 +14,7 @@ from resultados import mostrar_resultados_estructurales
 
 st.set_page_config(page_title="Calculadora Cerchas Planas", page_icon="🏗️", layout="wide")
 
-st.title("🏗️ Cerchas Planas 2Dm")
+st.title("🏗️ Cerchas Planas 2D")
 st.caption("Interfaz en Streamlit para resolver cerchas por el Método Matricial")
 
 # --- SECCIÓN 1: Datos Generales ---
