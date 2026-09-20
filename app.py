@@ -7,7 +7,7 @@ with st.sidebar:
     st.divider()
     st.caption("Desarrollado por: **M.A.T.G.**") 
     st.caption("Ingenieria Civil") 
-    st.caption("© 2026 - Universidad Nacional de Colombia, Sede Manizales")
+    st.caption("© 2026-2 - Universidad Nacional de Colombia, Sede Manizales")
 
 # Importar tu módulo de presentación
 from resultados import mostrar_resultados_estructurales
