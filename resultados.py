@@ -123,10 +123,6 @@ def mostrar_resultados_estructurales(
             df_kab = pd.DataFrame(kab, index=cols_a, columns=cols_b)
             st.dataframe(df_kab.style.format("{:.4f}"), use_container_width=True)
 
-            st.markdown("**Matriz $K_{bb}$ invertida (Libres - Libres):**")
-            kbb_inv = np.linalg.inv(kbb)
-            st.dataframe(pd.DataFrame(kbb_inv, index=cols_b, columns=cols_b).style.format("{:.9f}"), use_container_width=True)
-
         with col_k2:
             st.markdown("**Matriz $K_{bb}$ (Libres - Libres):**")
             df_kbb = pd.DataFrame(kbb, index=cols_b, columns=cols_b)
@@ -135,6 +131,10 @@ def mostrar_resultados_estructurales(
             st.markdown("**Matriz $K_{ba}$ (Libres - Restringidos):**")
             df_kba = pd.DataFrame(kba, index=cols_b, columns=cols_a)
             st.dataframe(df_kba.style.format("{:.4f}"), use_container_width=True)
+            
+            kbb_inv = np.linalg.inv(kbb)
+            st.dataframe(pd.DataFrame(kbb_inv, index=cols_b, columns=cols_b).style.format("{:.9f}"), use_container_width=True)
+    
 
     # --- SECCIÓN 5: Matrices Ke por Barra ---
     with st.expander("🧩 Ver Matrices de Rigidez por Barra ($K_e$ Global)"):
