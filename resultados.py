@@ -125,7 +125,7 @@ def mostrar_resultados_estructurales(
 
             st.markdown("**Matriz $K_{bb}$ invertida (Libres - Libres):**")
             kbb_inv = np.linalg.inv(kbb)
-            st.dataframe(pd.DataFrame(kbb_inv, index=cols_b, columns=cols_b).style.format("{:.4f}"), use_container_width=True)
+            st.dataframe(pd.DataFrame(kbb_inv, index=cols_b, columns=cols_b).style.format("{:.9f}"), use_container_width=True)
 
         with col_k2:
             st.markdown("**Matriz $K_{bb}$ (Libres - Libres):**")
