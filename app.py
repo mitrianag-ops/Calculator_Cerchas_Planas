@@ -25,7 +25,7 @@ with c1:
 with c2:
     num_barras = st.number_input("Número de Barras:", min_value=1, value=5, step=1)
 with c3:
-    modulo_E = st.number_input("Módulo Elasticidad E (MPa):", min_value=0.0, value=2e11, format="%e")
+    modulo_E = st.number_input("Módulo Elasticidad E (Kn/m2):", min_value=0.0, value=2e11, format="%e")
 
 # --- SECCIÓN 2: Coordenadas ---
 st.header("Sección 2 — Coordenadas de Nodos")
@@ -49,7 +49,7 @@ for b in range(1, num_barras + 1):
     with cb2:
         nj = st.number_input(f"Barra {b} - Nodo j:", min_value=1, max_value=num_nodos, value=2 if num_nodos >= 2 else 1, key=f"nj_{b}")
     with cb3:
-        area = st.number_input(f"Barra {b} - Área (mm²):", min_value=1e-6, value=0.002, format="%.6f", key=f"area_{b}")
+        area = st.number_input(f"Barra {b} - Área (m²):", min_value=1e-6, value=0.002, format="%.6f", key=f"area_{b}")
     conectividad_input.extend([ni, nj])
     areas_input.append(area)
 
@@ -77,7 +77,7 @@ if gdl_libres:
     cols_cargas = st.columns(min(len(gdl_libres), 4))
     for idx, gdl in enumerate(gdl_libres):
         with cols_cargas[idx % 4]:
-            p = st.number_input(f"Carga en GDL {gdl} (N):", value=0.0, key=f"carga_{gdl}")
+            p = st.number_input(f"Carga en GDL {gdl} (Kn):", value=0.0, key=f"carga_{gdl}")
             cargas_input.append(p)
 
 # --- BOTÓN DE EJECUCIÓN Y CÁLCULO ---
@@ -102,7 +102,8 @@ if st.button("🚀 Resolver Cercha Plana", type="primary"):
             "cargas": cargas_input
         }
         # Convertir la lista de coordenadas de metros (m) a milímetros (mm)
-        coords_mm = [val * 1000.0 for val in coords_input]
+        #coords_mm = [val * 1000.0 for val in coords_input]
+        
         # 2. LLAMADA A TU CÓDIGO DE CÁLCULO (Sustituye esta sección con tu función real):
         # -----------------------------------------------------------------------------
         # Ejemplo conceptual de cómo conectas tu script:
