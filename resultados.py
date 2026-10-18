@@ -62,14 +62,14 @@ def mostrar_resultados_estructurales(
 
     df_r = pd.DataFrame({
         "GDL Restringido": [f"GDL {gdl}" for gdl in gdl_restringidos],
-        "Fuerza de Reacción (N)": r_mostrar
+        "Fuerza de Reacción (KN)": r_mostrar
     })
     
     col_r1, col_r2 = st.columns([1, 2])
     with col_r1:
         st.dataframe(df_r.style.format({"Fuerza de Reacción (N)": "{:.4f}"}), use_container_width=True)
     with col_r2:
-        st.info("💡 **Unidades:** Fuerzas de reacción en Newtons (N).")
+        st.info("💡 **Unidades:** Fuerzas de reacción en Newtons (KN).")
 
     # --- SECCIÓN 3: Fuerzas Internas Axiales ---
     st.subheader("3. Fuerzas Internas Axiales por Barra")
@@ -85,12 +85,12 @@ def mostrar_resultados_estructurales(
 
     df_barras = pd.DataFrame({
         "Barra": [f"Barra {i+1}" for i in range(len(f_flat))],
-        "Fuerza Axial N (N)": f_flat,
+        "Fuerza Axial N (KN)": f_flat,
         "Estado": estados
     })
 
     st.dataframe(
-        df_barras.style.format({"Fuerza Axial N (N)": "{:.4f}"}),
+        df_barras.style.format({"Fuerza Axial N (KN)": "{:.4f}"}),
         use_container_width=True
     )
 
