@@ -124,7 +124,6 @@ if st.button("🚀 Resolver Cercha Plana", type="primary"):
             K_global=kglobal,
             kaa=kaa,
             kbb=kbb,
-            kbbinv=kbbinv,
             kab=kab,
             kba=kba      
         )
