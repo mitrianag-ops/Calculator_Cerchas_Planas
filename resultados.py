@@ -132,8 +132,8 @@ def mostrar_resultados_estructurales(
             df_kba = pd.DataFrame(kba, index=cols_b, columns=cols_a)
             st.dataframe(df_kba.style.format("{:.4f}"), use_container_width=True)
             
-           # ···kbb_inv = np.linalg.inv(kbb)
-            #st.dataframe(pd.DataFrame(kbb_inv, index=cols_b, columns=cols_b).style.format("{:.9f}"), use_container_width=True)
+            kbb_inv = np.linalg.inv(kbb)
+            st.dataframe(pd.DataFrame(kbb_inv, index=cols_b, columns=cols_b).style.format("{:.9f}"), use_container_width=True)
     
 
     # --- SECCIÓN 5: Matrices Ke por Barra ---
