@@ -107,7 +107,7 @@ if st.button("🚀 Resolver Cercha Plana", type="primary"):
         # 2. LLAMADA A TU CÓDIGO DE CÁLCULO (Sustituye esta sección con tu función real):
         # -----------------------------------------------------------------------------
         # Ejemplo conceptual de cómo conectas tu script:
-        des,pa,lista_ke,kglobal,f_axial,kaa,kbb,kbbinv,kab,kba = calculos(num_nodos,num_barras,conectividad_input,coords_input,areas_input,modulo_E,gdl_libres,gdl_restringidos,cargas_input)
+        des,pa,lista_ke,kglobal,f_axial,kaa,kbb,kab,kba = calculos(num_nodos,num_barras,conectividad_input,coords_input,areas_input,modulo_E,gdl_libres,gdl_restringidos,cargas_input)
         # -----------------------------------------------------------------------------
 
         st.success("¡Cálculo procesado exitosamente!")
