@@ -123,6 +123,9 @@ def mostrar_resultados_estructurales(
             df_kab = pd.DataFrame(kab, index=cols_a, columns=cols_b)
             st.dataframe(df_kab.style.format("{:.4f}"), use_container_width=True)
 
+            kbb_inv = np.linalg.inv(kbb)
+            st.dataframe(pd.DataFrame(kbb_inv, index=cols_b, columns=cols_b).style.format("{:.4f}"), use_container_width=True)
+
         with col_k2:
             st.markdown("**Matriz $K_{bb}$ (Libres - Libres):**")
             df_kbb = pd.DataFrame(kbb, index=cols_b, columns=cols_b)
