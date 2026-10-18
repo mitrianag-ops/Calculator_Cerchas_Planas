@@ -71,6 +71,7 @@ def calculos(nodos, barras, nodos_barra, lista_nodos, areas, elasticida, gdlibre
 
     kaa = kglobal[np.ix_(g_rest, g_rest)]
     kbb = kglobal[np.ix_(g_lib, g_lib)]
+    kbbinv=np.linalg.inv(kbb)
     kab = kglobal[np.ix_(g_rest, g_lib)]
     kba = kab.T
 
