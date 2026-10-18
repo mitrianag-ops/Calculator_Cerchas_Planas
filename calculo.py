@@ -126,6 +126,6 @@ def calculos(nodos, barras, nodos_barra, lista_nodos, areas, elasticida, gdlibre
         # Positivo = Tensión, Negativo = Compresión
         fuerza = eal * delta_l
         f_axial.append(fuerza)
-    return des, pa, lista_ke, kglobal, f_axial, kaa, kbb, kab, kba
+    return des, pa, lista_ke, kglobal, f_axial, kaa, kbb, kbbinv, kab, kba
 
 # seguir probardo con varios ejercicios
