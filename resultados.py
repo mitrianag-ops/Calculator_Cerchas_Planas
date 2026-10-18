@@ -17,7 +17,7 @@ def mostrar_resultados_estructurales(
 ):
     """
     Módulo de visualización para Streamlit.
-    Presenta los resultados manteniendo las unidades de entrada (mm, N, N/mm2)
+    Presenta los resultados manteniendo las unidades de entrada (m, KN, KN/m2)
     sin aplicar ninguna conversión numérica. Formatea todos los flotantes
     a máximo 4 decimales en notación decimal estándar (sin 'e').
     """
@@ -41,15 +41,15 @@ def mostrar_resultados_estructurales(
 
     df_u = pd.DataFrame({
         "GDL Libre": [f"GDL {gdl}" for gdl in gdl_libres],
-        "Desplazamiento (mm)": u_mostrar  # Muestra el valor puro sin convertir
+        "Desplazamiento (m)": u_mostrar  # Muestra el valor puro sin convertir
     })
     
     col_u1, col_u2 = st.columns([1, 2])
     with col_u1:
         # Format '{:.4f}' garantiza formato decimal estándar con máx 4 decimales
-        st.dataframe(df_u.style.format({"Desplazamiento (mm)": "{:.4f}"}), use_container_width=True)
+        st.dataframe(df_u.style.format({"Desplazamiento (m)": "{:.4f}"}), use_container_width=True)
     with col_u2:
-        st.info("💡 **Unidades:** Desplazamientos en milímetros (mm).")
+        st.info("💡 **Unidades:** Desplazamientos en metros (m).")
 
     # --- SECCIÓN 2: Reacciones ---
     st.subheader("2. Reacciones en Apoyos ($P_a$)")
