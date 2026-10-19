@@ -46,8 +46,8 @@ def mostrar_resultados_estructurales(
     
     col_u1, col_u2 = st.columns([1, 2])
     with col_u1:
-        # Format '{:.4f}' garantiza formato decimal estándar con máx 4 decimales
-        st.dataframe(df_u.style.format({"Desplazamiento (m)": "{:.4f}"}), use_container_width=True)
+        # Format '{:.4f}' garantiza formato decimal estándar con máx 9 decimales
+        st.dataframe(df_u.style.format({"Desplazamiento (m)": "{:.9f}"}), use_container_width=True)
     with col_u2:
         st.info("💡 **Unidades:** Desplazamientos en metros (m).")
 
